@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title></title>
+<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<style type="text/css">
+	#touchArea,#app,#btn{
+		width:90%;
+		height:200px; 
+		background-color:#CCC;
+		font-size:100px;
+	}
+</style>
+<body>
+<div style="width:100%;">
+<div id="touchArea">长按我jqury版本</div>
+ <div id='app' @touchstart="touchstart" @touchmove="touchmove" @touchend="touchend">点击啊vue版本</div>
+ <div id="btn" onmousedown="holdDown()" onmouseup="holdUp()">鼠标长按</div>
+</div>
+<!-- vue版本 -->
+<script>
+	new Vue({
+		el:'#app',
+		data:{
+			timeOutEvent:0
+		},
+		methods:{
+			touchstart: function(e){
+		        var self=this
+		        this.timeOutEvent = setTimeout(function(){
+		          self.longPress()
+		        },500);
+		        e.preventDefault();
+		      },
+		    touchmove: function(){
+		        clearTimeout(this.timeOutEvent);
+		        this.timeOutEvent = 0;
+		      },
+		    touchend: function(){
+		        clearTimeout(this.timeOutEvent);
+		        if(this.timeOutEvent!=0){
+		        	this.timeOutEvent = 0;
+		            alert("你这是点击，不是长按"+this.timeOutEvent);
+		        }
+		        return false;
+		    },
+		    longPress:function(){
+		       this.timeOutEvent = 0;
+		       alert("长按事件触发发"+this.timeOutEvent);
+		    },
+		}
+	})
+</script>
+<!-- jquery版本 -->
+<script>
+var timeOutEvent=0;
+$(function(){
+	$("#touchArea").on({
+		touchstart: function(e){
+			timeOutEvent = setTimeout("longPress()",500);
+			e.preventDefault();
+		},
+		touchmove: function(){
+			clearTimeout(timeOutEvent);
+			timeOutEvent = 0;
+		},
+		touchend: function(){
+			clearTimeout(timeOutEvent);
+			if(timeOutEvent!=0){
+				timeOutEvent = 0;
+				alert("你这是点击，不是长按"+timeOutEvent);
+			}
+			return false;
+		}
+	})
+});
+function longPress(){
+	timeOutEvent = 0;
+	alert("长按事件触发发"+timeOutEvent);
+}
+</script>
+<!-- 鼠标长按 -->
+<script type="text/javascript">
+  	var timeStart,timeEnd,time;//申明全局变量
+	function getTimeNow()//获取此刻时间
+	{
+	    var now=new Date();
+	    return now.getTime();
+	}
+	function holdDown()//鼠标按下时触发
+	{
+		alert('鼠标点击')
+	    timeStart=getTimeNow();//获取鼠标按下时的时间
+	    time=setInterval(function()//setInterval会每100毫秒执行一次
+	    {
+	        timeEnd=getTimeNow();//也就是每100毫秒获取一次时间
+	        if(timeEnd-timeStart>1000)//如果此时检测到的时间与第一次获取的时间差有1000毫秒
+	        {
+	          clearInterval(time);//便不再继续重复此函数 （clearInterval取消周期性执行）
+	　　　     alert("长按");//并弹出代码
+	        }
+	    },100);
+	}
+	function holdUp()
+	{
+		alert('鼠标离开'+(timeEnd-timeStart))
+	    clearInterval(time);//如果按下时间不到1000毫秒便弹起，
+	}
+</script>
+</body>
+</html>
