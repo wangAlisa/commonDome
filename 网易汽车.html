@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		#box1{
+			width:549px;
+			height:412px;
+			margin: 0 auto;
+			position: relative;
+			border:1px solid red;
+		}
+		ul{
+			list-style: none;
+			position: relative;
+		}
+		ul li{
+			position: absolute;
+		}
+		ul li.cur{
+			z-index: 10;
+		}
+		.bar{
+			position: absolute;
+			top:100%;
+			left: 0;
+			width:100%;
+			height:20px;
+			border:1px solid #ccc;
+		}
+		span{
+			display: block;
+			width:40px;
+			height:20px;
+			border-radius: 4px;
+			position: absolute;
+			background: red;
+		}
+	</style>
+</head>
+<body>
+	<div id="box1">
+		<ul>
+			<li class="cur"><img src="images/wangyiqiche/01.jpg" alt=""></li>
+			<li><img src="images/wangyiqiche/02.jpg" alt=""></li>
+			<li><img src="images/wangyiqiche/03.jpg" alt=""></li>
+			<li><img src="images/wangyiqiche/04.jpg" alt=""></li>
+			<li><img src="images/wangyiqiche/05.jpg" alt=""></li>
+		</ul>
+		<div class="bar">
+			<span id="block"></span>
+		</div>
+	</div>
+	<script type="text/javascript">
+	// 获取元素
+		var box1 = document.getElementById("box1");
+		var ul = document.getElementsByTagName("ul")[0];
+		var lis = ul.getElementsByTagName("li");
+		var block = document.getElementById("block");
+		// 定义信号量
+		var idx = 0;
+		// 给box1添加onmousewheel事件
+		box1.onmousewheel = function(e){
+			// 当滚动一次，根据滚轮滚动方向，更换图片
+			var up = e.wheelDelta > 0 ? true : false;
+			if(up){
+				// 让上一张图片显示
+				idx-- ;
+				if(idx <0){
+					idx = 0;
+				} 
+			}else {
+				// 让下一张图片显示
+				idx++;
+				if(idx>4){
+					idx = 4;
+				} 
+			}
+			// 清空所有li 的cur类
+			for(var i = 0 ;i<lis.length;i++){
+				lis[i].classList.remove("cur");
+			}
+			// 单独给当前显示的图片添加cur类
+			lis[idx].classList.add("cur");
+			// 更改block的位置
+			block.style.left = (box1.clientWidth-block.clientWidth)/4*idx+"px";
+		}
+		block.onmousedown = function(e){
+			// 记住当前的定位值
+			var left = this.offsetLeft;
+			// 记住当前鼠标所在位置
+			var x = e.clientX;
+			// 添加鼠标移动事件
+			document.onmousemove =function(e){
+				// 计算
+				var result = (e.clientX - x)/*这一段是鼠标的增量 再加上被拖拽元素的原来的定位值，就是新的定位值。*/+left;
+				// 判定
+				// 因为是一格一格移动的 所以就是几个固定的位置
+				// 算法：整个条的width减去两边的缓冲再除以5
+				idx = parseInt(result/((box1.clientWidth-block.clientWidth)/4));
+				// 更新cur类
+				for(var i = 0 ;i<lis.length;i++){
+					lis[i].classList.remove("cur");
+				}
+				if(idx<0){
+					idx=0;
+				}
+				if(idx>4){
+					idx=4;
+				}
+				// 单独给当前显示的图片添加cur类
+				lis[idx].classList.add("cur");
+				// 最终赋值
+				block.style.left = idx*(box1.clientWidth-block.clientWidth)/4+"px";
+			}
+		}
+		
+		document.onmouseup= function(){
+			document.onmousemove = null;
+		}
+	</script>
+</body>
+</html>

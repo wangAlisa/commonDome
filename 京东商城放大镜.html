@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			#small{
+				width: 350px;
+				height:449px;
+				background: url(images/imgs/small.jpg) no-repeat;
+				position: absolute;
+				 top: 333px;
+				 /*border-left:111px solid red;*/
+				left: 38px; 
+			}
+			#big{
+				display: none;
+				width: 548px;
+				height:548px;
+				background: url(images/imgs/big.jpg) no-repeat;
+				position: absolute;
+				top: 333px;
+				left:390px;
+			}
+			#jingpian{
+				display:none;
+				width: 240px;
+				height: 240px;
+				background:rgba(123,32,235,.3);
+				position: absolute; 
+			}
+	</style>
+</head>
+<body style = "height:2000px">
+	<!-- 左边的小图 -->
+	<div id="small">
+		<div id="jingpian"></div>
+	</div>
+	<!-- 右边的大图 -->
+	<div id="big"> 
+	</div>
+	<script type="text/javascript">
+		// 获取元素
+		var small = document.getElementById("small");
+		var big = document.getElementById("big");
+		var jingpian = document.getElementById("jingpian");
+		var xishu = 350/800;
+		// jingpian的鼠标按下事件
+		small.onmouseover = function(e){
+			 // 鼠标进入 镜片显示 大图显示
+			 jingpian.style.display = "block";
+			 big.style.display = "block";
+			// 按下才有事件
+			document.onmousemove = function(e){
+				// 定义变量 计算位置
+				var left = e.pageX - jingpian.clientWidth / 2 - small.offsetLeft ;
+				var top = e.pageY - jingpian.clientHeight / 2 - small.offsetTop;
+				// 判定left定位值
+				if(left >= small.clientWidth - jingpian.clientWidth){
+					left = small.clientWidth - jingpian.clientWidth;
+				}else if(left <=0){
+					left = 0;
+				}
+				// 判定top定位值
+				if(top >= small.clientHeight - jingpian.clientHeight){
+					top = small.clientHeight - jingpian.clientHeight
+				}else if(top<0){
+					top = 0;
+				}
+				// 赋值
+				jingpian.style.left = left+"px";
+				jingpian.style.top = top +"px";
+				// 让右边的背景定位发生改变
+				big.style.backgroundPosition =  - left/xishu   +"px "+ -top/xishu+"px";
+			}
+		}
+		// 鼠标移除small 取消事件 隐藏两个盒子
+		small.onmouseout = function(){
+			document.onmousemove = null;
+			jingpian.style.display = "none";
+			big.style.display = "none";
+		}
+		
+	</script>
+</body>
+</html>

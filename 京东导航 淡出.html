@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		#leftList{
+			display: none;
+			position: fixed;
+			/*height:440px;  */
+			left:10px;
+			opacity: 0;
+		}
+		#leftList li{
+			height:39px;
+			font-size: 12px;
+			color:white;
+			width:30px;
+			text-align: center;
+			line-height: 19.5px;
+			background: #444;
+			border-bottom:1px solid #ccc;
+		}
+		#leftList .cur{
+			background: red;
+		}
+		#floorList{
+			width:980px;
+			margin: 0 auto;
+		}
+		#floorList li{
+			width: 100%;
+			height:520px;
+			border-bottom:1px solid #ccc;
+		}
+		#top{
+			height: 1000px;
+		}
+	</style>
+</head>
+<body>
+	<div id="top"></div>
+	<ul id="leftList">
+			<li class="a b c">享品质</li>
+			<li>服饰美妆</li>
+			<li>家电手机</li>
+			<li>电脑数码</li>
+			<li>3C运动</li>
+			<li>&nbsp;&nbsp;爱吃</li>
+			<li>母婴家居</li>
+			<li>图书汽车</li>
+			<li>&nbsp;&nbsp;虚拟</li>
+			<li>还没逛够</li>
+			<li>&nbsp;&nbsp;顶部</li>
+	</ul>
+		<ul id="floorList">
+			<li>享品质</li>
+			<li>服饰美妆</li>
+			<li>家电手机</li>
+			<li>电脑数码</li>
+			<li>3C运动</li>
+			<li>&nbsp;&nbsp;爱吃</li>
+			<li>母婴家居</li>
+			<li>图书汽车</li>
+			<li>&nbsp;&nbsp;虚拟</li>
+			<li>还没逛够</li>
+			<li>&nbsp;&nbsp;顶部</li>
+	</ul>
+	<script type="text/javascript" src="js/animate.js"></script>
+	<script type="text/javascript">
+			// 获取元素
+			var leftList = document.getElementById("leftList");
+			var leftLis = leftList.getElementsByTagName("li");
+			
+			// 循环添加点击事件
+			for(var i =0;i<leftLis.length;i++){ 
+				// leftLis[i].setAttribute("idx",i);
+				 (function(i){
+				 	leftLis[i].onclick =function(){
+							// 改变scrollTop的值
+						  backTop(950+520*i,1000)
+				 	}
+				})(i)
+			}
+			// // 尺寸大小被改变会触发该事件
+	 		function resizeLeft(){
+			  // 获得视口的高度
+			  leftList.style.top =(document.documentElement.clientHeight-leftList.clientHeight)/2 +"px";
+			}
+			resizeLeft();
+			window.onresize = resizeLeft;
+			// 定义一个节流器
+			var timer = null;
+			// 卷动事件
+			window.onscroll = function(){
+				// console.log(1);
+				// 不停地对当前的卷动值判定，如果到了该出现左侧导航的时候，就要执行相应的代码
+				// 判断scrollTop值是多少 
+				if(document.body.scrollTop >= 950){
+					// 先清除再赋值 这样能保证只有一个函数在执行
+					 clearTimeout(timer);
+					 timer = setTimeout(function(){
+						leftList.style.display = "block";
+					  animate(leftList,{"opacity":1},1000);
+						resizeLeft(); 
+						// 判断是在第几层
+						var num = parseInt((document.body.scrollTop -950)/520);
+						// 全部的li都要移除cur类
+						for(var i =0;i<leftLis.length;i++){
+							// leftLis[i].className ="";
+							leftLis[i].classList.remove("cur");
+						}
+						// 再给num这个li加上cur类
+						leftLis[num].classList.add("cur");
+					},1000)
+				}else{
+					// 考虑用户体验
+					if(document.body.scrollTop<=500){
+						leftList.style.display ="none";
+						leftList.style.opacity = 0;
+					}
+				}
+			}
+			function backTop(target,time){
+				// 获取当前的scrollTop值
+				var nowScrollTop = document.body.scrollTop; 
+				// 总执行次数= 总执行时间除以单次执行时间
+				var allCount = time/20;
+				// 累加器 用来记录已经执行了多少
+				var count = 0;
+				// 开启定时器
+				var timer = setInterval(function(){
+					count++;
+					document.body.scrollTop = nowScrollTop - (nowScrollTop-target)/allCount *count;
+					if(count>=allCount){
+						// 停表
+						clearInterval(timer);
+						// 拉到终点
+						document.body.scrollTop=target;
+					}
+				},20)
+			}
+	</script>
+</body>
+</html>
